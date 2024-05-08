@@ -1,5 +1,5 @@
 import { getCourses } from "@/db/queries";
-import { courses } from '../../../db/schema';
+
 import { List } from "./list";
 
 const CoursesPage = async () =>{
