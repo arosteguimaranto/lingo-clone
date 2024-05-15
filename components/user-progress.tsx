@@ -3,9 +3,10 @@ import Link from 'next/link';
 import React from 'react'
 import { Button } from './ui/button';
 import { InfinityIcon } from 'lucide-react';
+import { courses } from '@/db/schema';
 
 type Props ={
-    activeCourse: {imageSrc: string; title: string};   //TODO: Replace width db types
+    activeCourse: typeof courses.$inferInsert;
     hearts: number;
     points: number;
     hasActiveSubscription: boolean;
