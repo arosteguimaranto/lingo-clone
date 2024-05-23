@@ -2,7 +2,7 @@ import { cache } from "react";
 import db from "./drizzle";
 import { auth } from "@clerk/nextjs";
 
-import { courses, units, userProgress, challengeProgress, lessons } from './schema';
+import { courses, units, userProgress, challengeProgress, lessons } from "./schema";
 import { eq } from "drizzle-orm";
 
 export const getUserProgress = cache(async () => {
@@ -19,14 +19,12 @@ export const getUserProgress = cache(async () => {
     },
   });
   return data;
-}); 
+});
 
-  
 export const getUnits = cache(async () => {
-  const {userId} = await auth();  
+  const { userId } = await auth();
   const userProgress = await getUserProgress();
-  if(!userId ||!userProgress?.activeCourseId){
-
+  if (!userId || !userProgress?.activeCourseId) {
     return [];
   }
 
@@ -36,42 +34,39 @@ export const getUnits = cache(async () => {
     with: {
       lessons: {
         with: {
-          challenges:{
-            with:{
+          challenges: {
+            with: {
               challengeProgress: {
-                where: eq(challengeProgress.userId,
-                  userId,
-                ) 
+                where: eq(challengeProgress.userId, userId),
               },
             },
           },
         },
       },
     },
-    
   });
 
-  const normalizedData = data.map((unit)=>{
-    const lessonsWithCompletedStatus = unit.lessons.map((lesson)=>{
-     const allCompletedChallenges = lesson.challenges.every((challenge)=>
-      {
-        return challenge.challengeProgress
-          && challenge.challengeProgress.length > 0
-          && challenge.challengeProgress.every((progress)=> progress.completed);
-    });
-    
-    return {
-      ...lesson, completed: allCompletedChallenges}
-
+  const normalizedData = data.map((unit) => {
+    const lessonsWithCompletedStatus = unit.lessons.map((lesson) => {
+      const allCompletedChallenges = lesson.challenges.every((challenge) => {
+        return (
+          challenge.challengeProgress &&
+          challenge.challengeProgress.length > 0 &&
+          challenge.challengeProgress.every((progress) => progress.completed)
+        );
       });
 
-      return {...unit, lessons: lessonsWithCompletedStatus}
+      return {
+        ...lesson,
+        completed: allCompletedChallenges,
+      };
     });
-    
-    return normalizedData;
 
+    return { ...unit, lessons: lessonsWithCompletedStatus };
+  });
+
+  return normalizedData;
 });
-
 
 export const getCourses = cache(async () => {
   const data = await db.query.courses.findMany();
