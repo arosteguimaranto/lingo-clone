@@ -1,7 +1,8 @@
 import { lessons, units } from "@/db/schema";
 import React from "react";
-import UnitBanner from "./unit-banner";
+
 import LessonButton from "./lesson-button";
+import { UnitBanner } from "./unit-banner";
 
 type Props = {
   id: number;
@@ -13,14 +14,14 @@ type Props = {
   })[];
 
   activeLesson:
-    | (typeof lessons.$inferSelect & {
-        unit: typeof units.$inferSelect;
-      })
-    | undefined;
+  typeof lessons.$inferSelect & {
+    unit: typeof units.$inferSelect;
+  }
+  | undefined;
   activeLessonPercentage: number;
 };
 
-const Unit = ({
+export const Unit = ({
   id,
   order,
   title,
@@ -34,7 +35,7 @@ const Unit = ({
       <UnitBanner title={title} description={description} />
       <div className="flex items-center flex-col relative">
         {lessons.map((lesson, index) => {
-          const isCurrent = lesson.id === activeLesson?.id; 
+          const isCurrent = lesson.id === activeLesson?.id;
           const isLocked = !lesson.completed && !isCurrent;
 
           return (
@@ -44,7 +45,7 @@ const Unit = ({
               index={index}
               totalCount={lessons.length - 1}
               locked={isLocked}
-              current={ isCurrent} //TODO: Remove hardcoded true
+              current={isCurrent} //TODO: Remove hardcoded true
               percentage={activeLessonPercentage}
             />
           );

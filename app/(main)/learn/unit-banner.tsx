@@ -8,7 +8,7 @@ type Props = {
   description: string;
 };
 
-const UnitBanner = ({ title, description }: Props) => {
+export const UnitBanner = ({ title, description }: Props) => {
   return (
     <div className="w-full rounded-xl bg-green-500 p-5 text-white flex items-center justify-between">
       <div className="space-y-2.5">
@@ -29,4 +29,4 @@ const UnitBanner = ({ title, description }: Props) => {
   );
 };
 
-export default UnitBanner;
+
